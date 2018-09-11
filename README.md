@@ -20,7 +20,17 @@ The actions mentioned above are performed after the user contract shows no sign 
 
 ### Encryption/Decryption System
 
-Files are encrypted and stored in IPFS nodes. Two encryption layers are applied: the first uses a symmetric key which is only known by the corresponding recipient `i`. The second uses a shared key of which all beneficiaries hold a share. If `n` the total amount of beneficiaries, then the shared key can be retrieved if and only if `k` out of `n` key shares are provided.
+Files are encrypted and stored in IPFS nodes. Two encryption layers are applied: the first uses a symmetric key which is only known by the corresponding recipient `i`. The second uses a shared key of which all beneficiaries hold a share. If `n` the total amount of beneficiaries, then the shared key can be retrieved if and only if `k` out of `n` key shares are provided. The parameter `k` (`1 <= k <= n`) is defined by the user upon system setup.  
+
+## Contract Interface
+
+- `function proof_of_life() public`
+- `function save_key_piece(uint k_i) public`
+- `function set_shared_key(uint k) public`
+- `function transfer_funds() public`
+- `function add_recipient(address _recipient, uint _percentage) public`
+- `function is_active() public view returns(bool)`
+
 
 
 
