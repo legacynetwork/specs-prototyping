@@ -5,8 +5,11 @@ Beneficiary = namedtuple('Beneficiary', ['wallet_address', 'message_url', 'funds
 
 class LegacyUserContract:
     """An emulated smart contract which implements basic functionalities. For prototyping purposes only"""
+
+    def __str__(self):
+        return self.owner
         
-    def __init__(self, k=2, n=2, t_PoL=90, init_deposit=0, beneficiaries=[]):
+    def __init__(self, k=2, n=2, t_PoL=90, init_deposit=0, beneficiaries=[], owner_address='0x'):
         # initialize state variables
         self.k = k
         self.n = n
@@ -14,6 +17,7 @@ class LegacyUserContract:
         self.balance = init_deposit
         self.is_alive = True
         self.beneficiaries = beneficiaries # an array of Beneficiary tuples
+        self.owner = owner_address
 
     def proof_of_life():
         pass
