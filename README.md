@@ -25,13 +25,12 @@ Files are encrypted and stored in IPFS nodes. Two encryption layers are applied:
 ## The Legacy Main User Contract
 
 ### State Variables
-- `beneficiary[] beneficiaries`
+- `beneficiary[n] beneficiaries`
   Where `beneficiary` is a `struct` with fields:
-    `address wallet`
-    `byte[] message_url`
-    `uint key_share`
-	
-- `bytes[SECRET_LEN][n] secret_pieces`
+    -`address wallet`
+    -`byte[] message_url`
+    -`uint share`
+    -`byte[SECRET_LEN] secret_piece`
 
 - `bytes[SECRET_LEN] secret`
 
@@ -50,11 +49,16 @@ Files are encrypted and stored in IPFS nodes. Two encryption layers are applied:
 ### Contract Interface
 
 - `function proof_of_life() public`
-- `function save_key_piece(uint k_i) public`
-- `function set_shared_key(uint k) public`
+- `function save_secret_piece(uint k_i) public`
+- `function set_shared_secret(uint k) public`
 - `function transfer_funds() public`
 - `function add_recipient(address _recipient, uint _percentage) public`
 - `function is_active() public view returns(bool)`
+
+## Current Limitations and Some Observations
+
+-It is currently difficult to add/remove beneficiaries once everything has been set. A new contract must be generated.
+-Since all beneficiaries are provided by the user at once, the code should be optimized to minimise transactions.
 
 
 
