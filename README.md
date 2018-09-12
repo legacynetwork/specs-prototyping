@@ -25,12 +25,11 @@ Files are encrypted and stored in IPFS nodes. Two encryption layers are applied:
 ## The Legacy Main User Contract
 
 ### State Variables
-- `beneficiary[n] beneficiaries`
-  Where `beneficiary` is a `struct` with fields:
-    -`address wallet`
-    -`byte[] message_url`
-    -`uint share`
-    -`byte[SECRET_LEN] secret_piece`
+- `beneficiary[n] beneficiaries`, where `beneficiary` is a `struct` with fields:  
+    - `address wallet`
+    - `byte[] message_url`
+    - `uint share`
+    - `byte[SECRET_LEN] secret_piece`
 
 - `bytes[SECRET_LEN] secret`
 
@@ -57,8 +56,8 @@ Files are encrypted and stored in IPFS nodes. Two encryption layers are applied:
 
 ## Current Limitations and Some Observations
 
--It is currently difficult to add/remove beneficiaries once everything has been set. A new contract must be generated.
--Since all beneficiaries are provided by the user at once, the code should be optimized to minimise transactions.
+- It is currently difficult to add/remove beneficiaries once everything has been set. A new contract must be generated and new secrets must be sent to the new set of beneficiaries.
+- Since all beneficiaries are provided by the user at once, the code should be optimized to minimise transactions.
 
 
 
