@@ -5,7 +5,7 @@ A basic, general description of the application architecture and some prototypes
 
 This prototype version aims to provide the most basic functionalities to be integrated in the new proof of concept already under development. These include:
 
-- Sending funds from a user smart contract to a given set of recipient addresses (aka as beneficiaries).
+- Sending funds from a user smart contract to a given set of `n` recipient addresses (aka as beneficiaries).
 
 - Sending encrypted data to a given set of recipients. 
 
@@ -14,6 +14,24 @@ This system assumes that each beneficiary already has an Ethereum account.
 Some additional features:
 
 - The amount of funds to be sent to each beneficiary is only revealed once the minimum set of conditions to transfer the funds is met.
+
+## Output
+The current python prototype provides as output two secrets that must be given to each beneficiary, that is, a *secret piece* along with a *personal decryption password*:	
+```
+- address 0x0
+    secret piece: 1-46564ca4
+    personal decryption password: jIcYWOi8EnUtb_4RLffqrJLG0Ygb5h1RAo3S7RSFb0I=
+
+
+- address 0x1
+    secret piece: 2-b68745f
+    personal decryption password: ojTO_xfmqUiY_5AyanVnW15apsaiohbB8erue8FW3J4=
+
+
+- address 0x2
+    secret piece: 3-507a9c19
+    personal decryption password: 3bW-vmZ67wVbVEbOdSdfuyc_tYLIZvwXLTr2L0WfvUA=
+```
 
 ### Switch Activation
 The actions mentioned above are performed after the user contract shows no sign of activity over a predefined time period `t_PoL`.
