@@ -1,7 +1,3 @@
-from collections import namedtuple
-
-# probably not required here
-Beneficiary = namedtuple('Beneficiary', ['wallet_address', 'message_url', 'funds_share', 'secret_piece'])
 
 class LegacyUserContract:
     """An emulated smart contract which implements basic functionalities. For prototyping purposes only"""
@@ -18,6 +14,7 @@ class LegacyUserContract:
         self.is_alive = True
         self.beneficiaries = beneficiaries # an array of Beneficiary tuples
         self.owner = owner_address
+        #self.address = '0x...'        
 
     def proof_of_life():
         pass
