@@ -4,6 +4,7 @@ from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from random import choice
 from string import ascii_uppercase, digits
+from hashlib import sha256
 
 # TO-DO: 
 # - n must be at least 2.
@@ -44,7 +45,7 @@ while not finished:
     funds_share_i = raw_input("Share of your funds that you'd like to transfer to this beneficiary:\n" )
     #beneficiaries_tmp.append(Beneficiary(address_i, message_url_i, funds_share_i, ''))
     beneficiaries_tmp.append({'wallet_address': address_i, 'enc_message': enc_message_i, 'funds_share': funds_share_i})
-    finished_input = raw_input("Any more beneficiaries to include (yes/no)?\n")
+    finished_input = raw_input("Have you finished adding beneficiaries (yes/no)?\n")
     while finished_input not in ['yes', 'no']:
         finished_input = raw_input("Not a valid answer. Try again\n")
     finished = True if finished_input == 'yes' else False    
