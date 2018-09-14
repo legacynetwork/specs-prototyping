@@ -1,27 +1,19 @@
 from legacy.contracts import LegacyUserContract
+from util.cipher import AESCipher
 from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
-from Crypto.Cipher import AES
-from hashlib import sha256
 from random import choice
 from string import ascii_uppercase, digits
-import base64
 
 # TO-DO: 
 # - n must be at least 2.
 # - test decrypt
 # - test everything actually
-# - refactoring: put class AESCipher out
 # - deprecate fernet and use AES instead
 
 def store_file_in_ipfs(message):
     # just return a random hash for now
     return '/ipfs/Qm' + sha256(message).hexdigest()
-
-# DEPRECATED
-# def get_personal_key(LEN):
-#     # returns a pseudo-random string of length LEN using only ASCII uppercase letters and digits
-#     return ''.join(choice(string.ascii_uppercase + string.digits) for _ in range(LEN))
 
 def get_personal_key():
     # returns a 44-char string        
@@ -32,27 +24,6 @@ def get_user_address():
     # returns a pseudo-random string of length LEN using only ASCII uppercase letters and digits
     LEN = 40
     return '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(LEN)) 
-
-class AESCipher:
-
-    def __init__(self, key):        
-        self.key = sha256(key.encode()).digest()
-        self.BLOCK_SIZE = 16 # AES operates on block multiples of 16 bytes (128 bits)
-
-    def encrypt(self, raw):
-        raw = self.pad(raw)        
-        encryption_suite = AES.new(self.key, AES.MODE_ECB)
-        return base64.b64encode(encryption_suite.encrypt(raw)) 
-
-    def decrypt(self, enc):
-        enc = base64.b64decode(enc)
-        iv = enc[:16]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv )
-        return unpad(cipher.decrypt( enc[16:] ))
-
-    def pad(self, s):
-        return s + (self.BLOCK_SIZE - len(s) % self.BLOCK_SIZE) * chr(self.BLOCK_SIZE - len(s) % self.BLOCK_SIZE)
-
     
 print "Setting up your Legacy smart contract. Please provide the following information:"
 print "(note: Legacy won't store any kind of sensible data)\n"
