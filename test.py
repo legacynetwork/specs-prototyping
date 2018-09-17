@@ -1,6 +1,6 @@
 from legacy.contracts import LegacyUserContract
 from util.cipher import AESCipher
-from util.util import save_object, load_object
+from util.util import save_object, load_object, say
 from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from random import choice
@@ -61,11 +61,17 @@ aes_cipher = AESCipher(secret_prime)
 for i in range(0, n):
     # first decryption step
     enc_message_i_prime = aes_cipher.decrypt(doub_enc_messages[i])
-    #if enc_message_i_prime != enc_message_i:
-    print enc_message_i_prime + '\n' + enc_messages[i] + '\n'
+    if enc_message_i_prime != enc_messages[i]:
+        say("Error, decrypted message using shared secret doesn't match original", 2)        
+        print enc_message_i_prime + '\n' + enc_messages[i] + '\n'
+
     # second decryption step    
-    #cipher_suite = Fernet(personal_keys[i])
-    # message_i_prime =
+    cipher_suite = Fernet(personal_keys[i])
+    message_i_prime = cipher_suite.decrypt(enc_message_i_prime)
+    if message_i_prime != secret_messages[i]:
+        say("Error, decrypted message using personal key doesn't match original", 2)        
+        print message_i_prime + '\n' + secret_messages[i] + '\n'
+
     
 
 
