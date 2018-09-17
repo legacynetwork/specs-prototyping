@@ -42,20 +42,36 @@ for i in range(0, n):
     
 user_address = '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(40))
 user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, user_address)
+contract_state = hash(user_contract)
 save_object(user_contract, 'data/user_contract.pkl')
 
 del user_contract
 
+#------------- Start tests -------------------
+#
+#
+
 # test object load
 user_contract = load_object('data/user_contract.pkl')
-print user_contract
+if contract_state != hash(user_contract):
+    say("An error occurred while loading the contract object.", 2)    
 
 # save secrets in contract and recover secret
 # for i in range(0, n):
 #     user_contract.save_secret_piece(secret_pieces[i])
 
-secret_prime = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0:2])
-aes_cipher = AESCipher(secret_prime)
+# try to recover secret with 1 out of 3 secret shares (should fail)
+try:
+    recov_secret = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0])
+except:
+    pass
+else:
+    say("This is weird. It shouldn't be possible to recover a secret with only one piece", 2)
+
+
+# try to recover secret with 2 out of 3 secret shares (should work)
+recov_secret = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0:2])
+aes_cipher = AESCipher(recov_secret)
 
 # decrypt messages and transfer funds
 for i in range(0, n):
@@ -71,6 +87,9 @@ for i in range(0, n):
     if message_i_prime != secret_messages[i]:
         say("Error, decrypted message using personal key doesn't match original", 2)        
         print message_i_prime + '\n' + secret_messages[i] + '\n'
+
+
+say("success!", 1)
 
     
 

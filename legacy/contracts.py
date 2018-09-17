@@ -13,14 +13,16 @@ class LegacyUserContract:
         self.n = n
         self.t_PoL = timedelta(t_PoL) # in days
         self.PoL_limit = datetime.now().date() + self.t_PoL
-        self.balance = init_deposit
-        self.is_alive = True
-        self.beneficiaries = beneficiaries # an array of Beneficiary tuples
+        self.balance = init_deposit        
+        self.beneficiaries = beneficiaries # a list of dictionaries
         self.owner = owner_address
         self.collected_secrets = []
 
+    def __hash__(self):
+        return hash((self.owner, self.k, self.n, self.balance, self.t_PoL))
+
     def proof_of_life(self):
-        self.PoL_limit = self.PoL_limit + self.t_PoL        
+        self.PoL_limit = self.PoL_limit + self.t_PoL
 
     def save_secret_piece(self, secret_piece, address):
         for i in range(0, n):
@@ -36,7 +38,7 @@ class LegacyUserContract:
             self.secret = PlaintextToHexSecretSharer.recover_secret(collected_secrets)
 
     def deposit(self, value):
-        self.balance = self.balance + value        
+        self.balance = self.balance + value
 
     def transfer_funds():
         pass
