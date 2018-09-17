@@ -17,15 +17,7 @@ from hashlib import sha256
 class LegacyUser:
 
     def __init__(self):
-        pass
-
-    @staticmethod
-    def get_user_address():
-        # in practice, provided through metamask
-        # returns a pseudo-random string of length LEN using only ASCII uppercase letters and digits
-        LEN = 40
-        return '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(LEN)) 
-
+        pass    
 
 def store_file_in_ipfs(message):
     # just return a random hash for now
@@ -54,7 +46,7 @@ if __name__ == '__main__':
         personal_keys.append(personal_key_i)
         cipher_suite = Fernet(personal_key_i)
         enc_message_i = cipher_suite.encrypt(message_i)
-        funds_share_i = raw_input("Share of your funds that you'd like to transfer to this beneficiary:\n" )
+        funds_share_i = raw_input("Share of your funds that you'd like to transfer to this beneficiary (eg. 25%):\n" )
         #beneficiaries_tmp.append(Beneficiary(address_i, message_url_i, funds_share_i, ''))
         beneficiaries_tmp.append({'wallet_address': address_i, 'enc_message': enc_message_i, 'funds_share': funds_share_i})
         finished_input = raw_input("Have you finished adding beneficiaries (yes/no)?\n")
@@ -88,9 +80,8 @@ if __name__ == '__main__':
     print "You will need to give signs of life periodically." 
     print "If you fail to so for a time greater than T, we'll assume you are dead."
     t_PoL = int(raw_input("Please enter a value for T (in days):\n"))
-
-    user_address = LegacyUser.get_user_address()
-    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, user_address)
+    
+    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)
     save_object(user_contract, 'data/user_contract.pkl')
 
     print "#####################################################################"

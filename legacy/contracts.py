@@ -1,5 +1,8 @@
 from secretsharing import PlaintextToHexSecretSharer
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
+from string import ascii_uppercase, digits
+from random import choice
+from util.util import save_object
 
 class LegacyUserContract:
     """An emulated smart contract which implements basic functionalities. For prototyping purposes only"""
@@ -7,7 +10,7 @@ class LegacyUserContract:
     def __str__(self):
         return "Contract " + self.owner
         
-    def __init__(self, k=2, n=2, t_PoL=90, init_deposit=0, beneficiaries=[], owner_address='0x0'):
+    def __init__(self, k=2, n=2, t_PoL=90, init_deposit=0, beneficiaries=[]):
         # initialize state variables
         self.k = k
         self.n = n
@@ -15,8 +18,9 @@ class LegacyUserContract:
         self.PoL_limit = datetime.now().date() + self.t_PoL
         self.balance = init_deposit        
         self.beneficiaries = beneficiaries # a list of dictionaries
-        self.owner = owner_address
+        self.owner = Ethereum.get_new_address()
         self.collected_secrets = []
+        self.secret = ""
 
     def __hash__(self):
         return hash((self.owner, self.k, self.n, self.balance, self.t_PoL))
@@ -41,7 +45,9 @@ class LegacyUserContract:
         self.balance = self.balance + value
 
     def transfer_funds():
-        pass
+        if not self.is_active():
+            # transfer funds
+            pass
 
     def add_recipient(recipient_address, funds_share):
         pass
@@ -49,3 +55,26 @@ class LegacyUserContract:
     def is_active(self):
         #return datetime.now().date() <= self.PoL_limit + self.PoL_margin # TODO add margin
         return datetime.now().date() <= self.PoL_limit
+
+
+class Wallet:
+    """ A very simple class emulating an Ethereum Wallet """
+
+    def __init__(self):
+        self.address = Ethereum.get_new_address()
+        self.balance = 0
+        self.save()
+
+    def save(self):
+        save_object(self, 'data/' + self.address + '.pkl')
+
+
+class Ethereum:
+
+    @staticmethod
+    def get_new_address():
+        # returns a pseudo-random string of length LEN using only ASCII uppercase letters and digits
+        LEN = 40
+        return '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(LEN)) 
+        
+

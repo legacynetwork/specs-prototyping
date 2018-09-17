@@ -17,12 +17,12 @@ class Beneficiary:
 	def get_personal_key():
 		pass
 
-	def claim_funs():
+	def claim_funds():
 		pass
 
 
 if __file__ == '__main__':
 
-	user_contract = load_object('user_contract.pkl')
+	user_contract = load_object('data/user_contract.pkl')
 
 

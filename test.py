@@ -1,11 +1,10 @@
-from legacy.contracts import LegacyUserContract
+from legacy.contracts import LegacyUserContract, Wallet, Ethereum
 from util.cipher import AESCipher
 from util.util import save_object, load_object, say
-from secretsharing import SecretSharer, PlaintextToHexSecretSharer
+from secretsharing import PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
-from random import choice
-from string import ascii_uppercase, digits
 from hashlib import sha256
+import random
 
 n = 3
 k = 2
@@ -31,17 +30,16 @@ personal_keys = []
 enc_messages = []
 doub_enc_messages = []
 for i in range(0, n):
-    address_i = '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(40))         
+    wallet_i = Wallet()
     personal_keys.append(Fernet.generate_key())
     cipher_suite = Fernet(personal_keys[i])    
     enc_messages.append(cipher_suite.encrypt(secret_messages[i]))    
     doub_enc_messages.append(aes_cipher.encrypt(enc_messages[i]))
     message_url_i =  '/ipfs/Qm' + sha256(doub_enc_messages[i]).hexdigest() # store_file_in_ipfs(doub_enc_message_i)
     funds_share_i = share_of_funds[i]                 
-    beneficiaries.append({'wallet_address': address_i, 'message_url': message_url_i, 'funds_share': funds_share_i})
+    beneficiaries.append({'wallet_address': wallet_i.address, 'message_url': message_url_i, 'funds_share': funds_share_i})
     
-user_address = '0x' + ''.join(choice(ascii_uppercase + digits) for _ in range(40))
-user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, user_address)
+user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)
 contract_state = hash(user_contract)
 save_object(user_contract, 'data/user_contract.pkl')
 
@@ -69,6 +67,10 @@ try:
     recov_secret = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0:2])
 except:
     say("Could not recover secret.", 2)
+
+# check if recovered secret matches original one
+if recov_secret != secret:
+    say('Error. The recovered secret does not match the original one', 2)    
 
 # save secrets in contract and recover secret
 for i in range(0, n):
