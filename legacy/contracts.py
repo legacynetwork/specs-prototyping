@@ -3,7 +3,7 @@ class LegacyUserContract:
     """An emulated smart contract which implements basic functionalities. For prototyping purposes only"""
 
     def __str__(self):
-        return self.owner
+        return "Contract " + self.owner
         
     def __init__(self, k=2, n=2, t_PoL=90, init_deposit=0, beneficiaries=[], owner_address='0x'):
         # initialize state variables

@@ -6,4 +6,4 @@ def save_object(obj, filename):
 
 def load_object(filename):
     with open(filename, 'rb') as input:
-    return pickle.load(input)
+        return pickle.load(input)

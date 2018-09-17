@@ -129,3 +129,6 @@ pip-selfcheck.json
 
 
 # End of https://www.gitignore.io/api/python
+
+# Project-specific
+data/
