@@ -47,7 +47,7 @@ save_object(user_contract, 'data/user_contract.pkl')
 
 del user_contract
 
-#------------- Start tests -------------------
+#-------------------------- Start tests ------------------------------
 #
 #
 
@@ -55,10 +55,6 @@ del user_contract
 user_contract = load_object('data/user_contract.pkl')
 if contract_state != hash(user_contract):
     say("An error occurred while loading the contract object.", 2)    
-
-# save secrets in contract and recover secret
-# for i in range(0, n):
-#     user_contract.save_secret_piece(secret_pieces[i])
 
 # try to recover secret with 1 out of 3 secret shares (should fail)
 try:
@@ -68,9 +64,21 @@ except:
 else:
     say("This is weird. It shouldn't be possible to recover a secret with only one piece", 2)
 
-
 # try to recover secret with 2 out of 3 secret shares (should work)
-recov_secret = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0:2])
+try:
+    recov_secret = PlaintextToHexSecretSharer.recover_secret(secret_pieces[0:2])
+except:
+    say("Could not recover secret.", 2)
+
+# save secrets in contract and recover secret
+for i in range(0, n):
+    user_contract.save_secret_piece(secret_pieces[i], beneficiaries[i]['wallet_address'])
+
+# after saving, secret should have been recovered
+if recov_secret != user_contract.secret:
+    say("Error. Recovered secret mismatch.", 2)
+
+
 aes_cipher = AESCipher(recov_secret)
 
 # decrypt messages and transfer funds

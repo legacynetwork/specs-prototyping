@@ -25,7 +25,7 @@ class LegacyUserContract:
         self.PoL_limit = self.PoL_limit + self.t_PoL
 
     def save_secret_piece(self, secret_piece, address):
-        for i in range(0, n):
+        for i in range(0, self.n):
             if self.beneficiaries[i]['wallet_address'] == address:
                 #self.beneficiaries[i]['secret_piece'] = secret_piece
                 self.collected_secrets.append(secret_piece)
@@ -35,7 +35,7 @@ class LegacyUserContract:
     def recover_shared_secret(self):
         # TODO: manage exceptions
         if len(self.collected_secrets) >= self.k:
-            self.secret = PlaintextToHexSecretSharer.recover_secret(collected_secrets)
+            self.secret = PlaintextToHexSecretSharer.recover_secret(self.collected_secrets)
 
     def deposit(self, value):
         self.balance = self.balance + value
