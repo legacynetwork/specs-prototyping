@@ -73,10 +73,23 @@ except:
 # save secrets in contract and recover secret
 for i in range(0, n):
     user_contract.save_secret_piece(secret_pieces[i], beneficiaries[i]['wallet_address'])
+save_object(user_contract, 'data/user_contract.pkl')
+
+del user_contract
+user_contract = load_object('data/user_contract.pkl')
 
 # after saving, secret should have been recovered
 if recov_secret != user_contract.secret:
     say("Error. Recovered secret mismatch.", 2)
+
+# testing proof of life related functions
+# since we just created the contract, user should be alive
+if not user_contract.is_active():
+    say("Error. User should be alive", 2)
+t0 = user_contract.PoL_limit
+user_contract.proof_of_life()
+if user_contract.PoL_limit - t0 != user_contract.t_PoL:
+    say("Error with proof_of_life() method", 2)
 
 
 aes_cipher = AESCipher(recov_secret)

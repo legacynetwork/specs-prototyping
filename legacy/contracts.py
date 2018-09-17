@@ -46,5 +46,6 @@ class LegacyUserContract:
     def add_recipient(recipient_address, funds_share):
         pass
 
-    def is_active():        
-        return datetime.now().date() <= self.PoL_limit + self.PoL_margin
+    def is_active(self):
+        #return datetime.now().date() <= self.PoL_limit + self.PoL_margin # TODO add margin
+        return datetime.now().date() <= self.PoL_limit
