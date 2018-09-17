@@ -1,3 +1,4 @@
+from util.util import load_object, save_object
 
 class Beneficiary:
 
@@ -18,4 +19,10 @@ class Beneficiary:
 
 	def claim_funs():
 		pass
+
+
+if __file__ == '__main__':
+
+	user_contract = load_object('user_contract.pkl')
+
 

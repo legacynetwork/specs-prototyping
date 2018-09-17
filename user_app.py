@@ -1,5 +1,6 @@
 from legacy.contracts import LegacyUserContract
 from util.cipher import AESCipher
+from util.util import save_object
 from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from random import choice
@@ -89,6 +90,7 @@ if __name__ == '__main__':
 
     user_address = LegacyUser.get_user_address()
     user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, user_address)
+    save_object(user_contract, 'user_contract.pkl')
 
     print "#####################################################################"
     print "#################### contract successfully created ! ################"
