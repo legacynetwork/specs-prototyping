@@ -12,6 +12,7 @@ from hashlib import sha256
 # - test decrypt
 # - test everything actually
 # - deprecate fernet and use AES instead
+# - store hashes of secrets in the contract
 
 class LegacyUser:
 
