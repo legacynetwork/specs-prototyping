@@ -40,7 +40,7 @@ if __name__ == '__main__':
     
     print "Setting up your Legacy smart contract. Please provide the following information:"
     print "(note: Legacy won't store any kind of sensible data)\n"
-    print "Step 1: Your Beneficiaries"
+    print "### Step 1: Your Beneficiaries"
 
     beneficiaries_tmp = []
     personal_keys = []
@@ -63,13 +63,13 @@ if __name__ == '__main__':
         finished = True if finished_input == 'yes' else False    
         i = i + 1
 
-    print "\nStep 2: The Shared Key"
+    print "\n### Step 2: The Shared Key"
     n = i # number of beneficiaries
     secret = raw_input("Now, enter a random phrase that will be used to create your secret password (eg. 'I love cats').\n") 
     secret = secret.lower()
     print "Your secret will be shared among " + str(n) + " persons. How many of them will be required to restore it?\n"
-    k = raw_input("Please enter an integer k such that 2 <= k < " + str(n) + "\n")
-    secret_pieces = PlaintextToHexSecretSharer.split_secret(secret, int(k), n)
+    k = int(raw_input("Please enter an integer k such that 2 <= k < " + str(n) + "\n"))
+    secret_pieces = PlaintextToHexSecretSharer.split_secret(secret, k, n)
     # create encryption object based on shared secret
     aes_cipher = AESCipher(secret)
 
@@ -84,14 +84,14 @@ if __name__ == '__main__':
         # save the beneficiary dict in array (note that we don't store sensible data)
         beneficiaries.append({'wallet_address': address_i, 'message_url': message_url_i, 'funds_share': funds_share_i})
 
-    print "\nStep 3: Proof of Life"
+    print "\n### Step 3: Proof of Life"
     print "You will need to give signs of life periodically." 
     print "If you fail to so for a time greater than T, we'll assume you are dead."
-    t_PoL = raw_input("Please enter a value for T (in days):\n")
+    t_PoL = int(raw_input("Please enter a value for T (in days):\n"))
 
     user_address = LegacyUser.get_user_address()
     user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, user_address)
-    save_object(user_contract, 'user_contract.pkl')
+    save_object(user_contract, 'data/user_contract.pkl')
 
     print "#####################################################################"
     print "#################### contract successfully created ! ################"

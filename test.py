@@ -91,7 +91,6 @@ user_contract.proof_of_life()
 if user_contract.PoL_limit - t0 != user_contract.t_PoL:
     say("Error with proof_of_life() method", 2)
 
-
 aes_cipher = AESCipher(recov_secret)
 
 # decrypt messages and transfer funds
@@ -106,7 +105,7 @@ for i in range(0, n):
     cipher_suite = Fernet(personal_keys[i])
     message_i_prime = cipher_suite.decrypt(enc_message_i_prime)
     if message_i_prime != secret_messages[i]:
-        say("Error, decrypted message using personal key doesn't match original", 2)        
+        say("Error, decrypted message using personal key doesn't match the original one", 2)        
         print message_i_prime + '\n' + secret_messages[i] + '\n'
 
 
