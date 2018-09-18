@@ -5,6 +5,7 @@ from secretsharing import PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from hashlib import sha256
 import os, re
+import config
 
 n = 3
 k = 2
@@ -41,7 +42,7 @@ for i in range(0, n):
     
 user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)
 contract_state = hash(user_contract)
-save_object(user_contract, 'data/user_contract.pkl')
+save_object(user_contract, os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 
 del user_contract
 
@@ -50,7 +51,7 @@ del user_contract
 #
 
 # test object load
-user_contract = load_object('data/user_contract.pkl')
+user_contract = load_object(os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 if contract_state != hash(user_contract):
     say("An error occurred while loading the contract object.", 2)    
 
@@ -75,10 +76,10 @@ if recov_secret != secret:
 # save secrets in contract and recover secret
 for i in range(0, n):
     user_contract.save_secret_piece(secret_pieces[i], beneficiaries[i]['wallet_address'])
-save_object(user_contract, 'data/user_contract.pkl')
+save_object(user_contract, os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 
 del user_contract
-user_contract = load_object('data/user_contract.pkl')
+user_contract = load_object(os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 
 # after saving, secret should have been recovered
 if recov_secret != user_contract.secret:
@@ -114,9 +115,9 @@ for i in range(0, n):
 say("success!", 1)
 
 # clean up data directory   
-for f in os.listdir('./data/'):
+for f in os.listdir(config.DATA_DIR):
     if re.search('^0x\w*\.pkl\Z', f):
-        os.remove(os.path.join('./data/', f))
+        os.remove(os.path.join(config.DATA_DIR, f))
 
     
 

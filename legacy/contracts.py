@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase, digits
 from random import choice
 from util.util import save_object
+import config
+import os
 
 class LegacyUserContract:
     """An emulated smart contract which implements basic functionalities. For prototyping purposes only"""
@@ -66,7 +68,7 @@ class Wallet:
         self.save()
 
     def save(self):
-        save_object(self, 'data/' + self.address + '.pkl')
+        save_object(self, os.path.join(config.DATA_DIR, self.address + '.pkl'))        
 
 
 class Ethereum:

@@ -81,8 +81,8 @@ if __name__ == '__main__':
     print "If you fail to so for a time greater than T, we'll assume you are dead."
     t_PoL = int(raw_input("Please enter a value for T (in days):\n"))
     
-    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)
-    save_object(user_contract, 'data/user_contract.pkl')
+    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)    
+    save_object(user_contract, os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 
     print "#####################################################################"
     print "#################### contract successfully created ! ################"

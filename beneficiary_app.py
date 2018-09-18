@@ -22,7 +22,7 @@ class Beneficiary:
 
 
 if __file__ == '__main__':
-
-	user_contract = load_object('data/user_contract.pkl')
+	
+	user_contract = load_object(os.path.join(config.DATA_DIR, 'user_contract.pkl'))
 
 
