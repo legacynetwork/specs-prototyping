@@ -4,7 +4,7 @@ from util.util import save_object, load_object, say
 from secretsharing import PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from hashlib import sha256
-import random
+import os, re
 
 n = 3
 k = 2
@@ -112,6 +112,11 @@ for i in range(0, n):
 
 
 say("success!", 1)
+
+# clean up data directory   
+for f in os.listdir('./data/'):
+    if re.search('^0x\w*\.pkl\Z', f):
+        os.remove(os.path.join('./data/', f))
 
     
 
