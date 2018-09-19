@@ -1,4 +1,5 @@
-import pickle
+import pickle, os
+import config
 
 # colors for printing debug messages
 COLORS = {
@@ -17,3 +18,12 @@ def load_object(filename):
 
 def say(msg, level=0):
     print COLORS[level] + msg + COLORS[0]
+
+# TODO: test
+def purge():
+    for f in os.listdir(config.DATA_DIR):
+        file_path = os.path.join(config.DATA_DIR, f)
+        # to only search for valid addresses, add condition:
+        # re.search('^0x\w*\.pkl\Z', f)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
