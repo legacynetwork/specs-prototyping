@@ -8,6 +8,14 @@ import os, re
 import config
 
 # parameters
+contract_name = 'test_contract'
+owner = '0xnflu0c8ml2maxpc6h30r3am2qyaeok5labd1po5f'
+# these are the accounts of the beneficiaries
+addresses = [
+    '0x41k2qiianhyajppzd5avvrp12wbn42y0m2k70y5c',
+    '0x9q6v0r516hrk7kvn0ixojefu6diyoblvj5urlo70',
+    '0xn8b77b6nmo14ozrr00gcy0ccirlpyw2hs31a9k0f'
+    ]
 n = 3
 k = 2
 secret_messages =(
@@ -21,9 +29,7 @@ t_PoL = 90
 init_balance = 100 # user has 100 eth to distribute
 
 
-def create_test_scenario():
-    
-    # now setup scenario
+def create_test_scenario():    
     secret_low = secret.lower()
     secret_pieces = PlaintextToHexSecretSharer.split_secret(secret_low, k, n)
     # create encryption object based on shared secret
@@ -34,7 +40,7 @@ def create_test_scenario():
     enc_messages = []
     doub_enc_messages = []
     for i in range(0, n):
-        wallet_i = Wallet() # creates a wallet with random address
+        wallet_i = Wallet(addresses[i]) # creates a wallet with random address
         wallet_i.save()
         personal_keys.append(Fernet.generate_key())
         cipher_suite = Fernet(personal_keys[i])    
@@ -45,10 +51,16 @@ def create_test_scenario():
         beneficiaries.append({'wallet_address': wallet_i.address, 'message_url': message_url_i, 
             'funds_share': funds_share_i, 'secret_piece_hash': sha256(secret_pieces[i]).hexdigest()})
         
-    user_contract = LegacyUserContract(k, n, t_PoL, init_balance, beneficiaries)
-    user_contract.save('user_contract')
+    user_contract = LegacyUserContract(k, n, t_PoL, init_balance, beneficiaries, owner, contract_name)
+    user_contract.save(contract_name)
     contract_state = hash(user_contract)
     return contract_state, secret_pieces, enc_messages, doub_enc_messages, personal_keys, beneficiaries
+
+def purge_test_scenario():
+    accounts = addresses
+    accounts.append(contract_name)
+    purge(accounts)  
+
     
 
 
@@ -57,7 +69,7 @@ if __name__ == '__main__':
     contract_state, secret_pieces, enc_messages, doub_enc_messages, personal_keys, beneficiaries = create_test_scenario()
 
     # test object load
-    user_contract = load_object(os.path.join(config.DATA_DIR, 'user_contract.pkl'))
+    user_contract = LegacyUserContract.load(contract_name)
     if contract_state != hash(user_contract):
         say("An error occurred while loading the contract object.", 2)    
 
@@ -82,10 +94,10 @@ if __name__ == '__main__':
     # save secrets in contract and recover secret
     for i in range(0, n):
         user_contract.save_secret_piece(secret_pieces[i], beneficiaries[i]['wallet_address'])
-    user_contract.save('user_contract')
+    user_contract.save(contract_name)
 
     del user_contract
-    user_contract = load_object(os.path.join(config.DATA_DIR, 'user_contract.pkl'))
+    user_contract = LegacyUserContract.load(contract_name)
 
     # after saving, secret should have been recovered
     if recov_secret != user_contract.secret:
@@ -121,7 +133,8 @@ if __name__ == '__main__':
     say("success!", 1)
 
     # clean up data directory  
-    purge()     
+    purge_test_scenario()    
+       
     
 
 

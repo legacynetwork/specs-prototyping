@@ -1,4 +1,4 @@
-from legacy.contracts import LegacyUserContract, Wallet
+from legacy.contracts import LegacyUserContract, Wallet, Ethereum
 from util.cipher import AESCipher
 from util.util import purge
 from secretsharing import SecretSharer, PlaintextToHexSecretSharer
@@ -15,13 +15,16 @@ import sys
 # - deprecate fernet and use AES instead
 # - store hashes of secrets in the contract
 
-eth_accounts = (
+ETH_ACCOUNTS = (
     '0xjjqcouv812rdguinvu9izlsgnhg0t6rahwnzw3ae',
     '0x87akw04kssvmlvvqssl8gvpnghzbmz99oatx0m0h',
     '0xy7ei3dyk3y9ruprxavhbde5qajzm34zpcviufyen',
     '0xc0kgh2crlk1wdfkn4ldha0d4lel0kmv4ue86wegu',
     '0x1rfle3wewrd1psmb0obl8s3as8p296ap5w7phgac'
     )
+
+# in practice, obtained through metamask
+USER_ADDRESS = '0xfsefjzd1vpmxokklf6l5n091jatlam4286onamfs'
 
 class LegacyUserApp:
 
@@ -30,9 +33,15 @@ class LegacyUserApp:
 
     @staticmethod
     def populate_system():
-        for i in range(0, len(eth_accounts)):
-            account_i = Wallet(eth_accounts[i])
+        for i in range(0, len(ETH_ACCOUNTS)):
+            account_i = Wallet(ETH_ACCOUNTS[i])
             account_i.save()
+
+    # DEPRECATED
+    @staticmethod
+    def get_user_address():
+        return Ethereum.get_new_address()
+
 
 def store_file_in_ipfs(message):
     # just return a random hash for now
@@ -46,9 +55,9 @@ def get_personal_key():
 if __name__ == '__main__':
 
     if '--fresh' in sys.argv:
-        purge()
+        purge()  # deletes all state data previously stored
 
-    LegacyUserApp.populate_system()
+    LegacyUserApp.populate_system() # creates some wallets to use as beneficiaries
 
     print "#####################################################################"
     print "####################### View: User  #################################"
@@ -59,8 +68,8 @@ if __name__ == '__main__':
     print "(note: Legacy won't store any kind of sensible data)\n"
     print "### Step 1: Your Beneficiaries"
     print "Existing Ethereum accounts:"
-    for i in range(0, len(eth_accounts)):
-        print "\t" + eth_accounts[i]
+    for i in range(0, len(ETH_ACCOUNTS)):
+        print "\t" + ETH_ACCOUNTS[i]
 
     beneficiaries_tmp = []
     personal_keys = []
@@ -69,6 +78,7 @@ if __name__ == '__main__':
     i = 0
     while not finished:    
         address_i = str(raw_input("Ethereum wallet address of beneficiary " + str(i) + ":\n" ))
+        # TODO: if address doesn't exist, create it ?
         message_i = raw_input("What secret message would you like to leave to this person:\n")
         personal_key_i = get_personal_key()
         personal_keys.append(personal_key_i)
@@ -101,15 +111,16 @@ if __name__ == '__main__':
         funds_share_i = beneficiaries_tmp[i]['funds_share']    
         
         # save the beneficiary dict in array (note that we don't store sensible data)
-        beneficiaries.append({'wallet_address': address_i, 'message_url': message_url_i, 'funds_share': funds_share_i})
+        beneficiaries.append({'wallet_address': address_i, 'message_url': message_url_i,
+            'funds_share': funds_share_i, 'secret_piece_hash': sha256(secret_pieces[i]).hexdigest()})
 
     print "\n### Step 3: Proof of Life"
     print "You will need to give signs of life periodically." 
     print "If you fail to so for a time greater than T, we'll assume you are dead."
     t_PoL = int(raw_input("Please enter a value for T (in days):\n"))
-    
-    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries)
-    user_contract.save('user_contract')    
+            
+    user_contract = LegacyUserContract(k, n, t_PoL, 0, beneficiaries, USER_ADDRESS) 
+    user_contract.save() # saving with default name 'user_contract'    
 
     print "#####################################################################"
     print "#################### contract successfully created ! ################"
