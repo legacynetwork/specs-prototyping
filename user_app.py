@@ -3,10 +3,9 @@ from util.cipher import AESCipher
 from util.util import purge
 from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
-from random import choice
-from string import ascii_uppercase, digits
 from hashlib import sha256
-import sys
+import sys, os
+import config
 
 # TO-DO: 
 # - n must be at least 2.
@@ -32,9 +31,16 @@ def populate_system():
         account_i = Wallet(ETH_ACCOUNTS[i])
         account_i.save()
 
-def store_file_in_ipfs(message):
-    # just return a random hash for now
-    return '/ipfs/Qm' + sha256(message).hexdigest()
+def store_file_in_ipfs(message, filename=""):
+    # emulates file storage in ipfs
+    index = 'Qm' + sha256(message).hexdigest()
+    if not filename:
+        filename = index
+    file_path = os.path.join(config.DATA_DIR, filename)
+    with open(file_path + '.txt', 'w') as the_file:
+        the_file.write(message)
+    #return '/ipfs/' + file_name
+    return index
 
 def get_personal_key():
     # returns a 44-char string        

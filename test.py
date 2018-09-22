@@ -1,6 +1,7 @@
 from legacy.contracts import LegacyUserContract, Wallet, Ethereum
+from user_app import store_file_in_ipfs
 from util.cipher import AESCipher
-from util.util import load_object, say, purge
+from util.util import load_object, say
 from secretsharing import PlaintextToHexSecretSharer
 from cryptography.fernet import Fernet
 from hashlib import sha256
@@ -12,10 +13,11 @@ contract_name = 'test_contract'
 owner = '0xnflu0c8ml2maxpc6h30r3am2qyaeok5labd1po5f'
 # these are the accounts of the beneficiaries
 addresses = [
-    '0x41k2qiianhyajppzd5avvrp12wbn42y0m2k70y5c',
-    '0x9q6v0r516hrk7kvn0ixojefu6diyoblvj5urlo70',
-    '0xn8b77b6nmo14ozrr00gcy0ccirlpyw2hs31a9k0f'
+    'test_0x41k2qiianhyajppzd5avvrp12wbn42y0m2k70y5c',
+    'test_0x9q6v0r516hrk7kvn0ixojefu6diyoblvj5urlo70',
+    'test_0xn8b77b6nmo14ozrr00gcy0ccirlpyw2hs31a9k0f'
     ]
+message_files = addresses        
 n = 3
 k = 2
 secret_messages =(
@@ -28,7 +30,6 @@ secret = "I've seen things you people wouldn't believe"
 t_PoL = 90
 init_balance = 100 # user has 100 eth to distribute
 
-
 def create_test_scenario():    
     secret_low = secret.lower()
     secret_pieces = PlaintextToHexSecretSharer.split_secret(secret_low, k, n)
@@ -39,14 +40,14 @@ def create_test_scenario():
     personal_keys = []
     enc_messages = []
     doub_enc_messages = []
-    for i in range(0, n):
+    for i in range(n):
         wallet_i = Wallet(addresses[i]) # creates a wallet with random address
         wallet_i.save()
         personal_keys.append(Fernet.generate_key())
         cipher_suite = Fernet(personal_keys[i])    
         enc_messages.append(cipher_suite.encrypt(secret_messages[i]))    
         doub_enc_messages.append(aes_cipher.encrypt(enc_messages[i]))
-        message_url_i =  '/ipfs/Qm' + sha256(doub_enc_messages[i]).hexdigest() # store_file_in_ipfs(doub_enc_message_i)
+        message_url_i = store_file_in_ipfs(doub_enc_messages[i], message_files[i])      
         funds_share_i = share_of_funds[i]                 
         beneficiaries.append({'wallet_address': wallet_i.address, 'message_url': message_url_i, 
             'funds_share': funds_share_i, 'secret_piece_hash': sha256(secret_pieces[i]).hexdigest()})
@@ -56,17 +57,17 @@ def create_test_scenario():
     contract_state = hash(user_contract)
     return contract_state, secret_pieces, enc_messages, doub_enc_messages, personal_keys, beneficiaries
 
-def purge_test_scenario():
-    accounts = addresses
-    accounts.append(contract_name)
-    purge(accounts)  
-
-    
+def purge_test_scenario():    
+    # deletes all files in the data directory whose name start with 'test_'
+    for f in os.listdir(config.DATA_DIR):
+        file_path = os.path.join(config.DATA_DIR, f)        
+        if os.path.isfile(file_path) and f.startswith("test_"):            
+            os.remove(file_path)                  
 
 
 if __name__ == '__main__':
 
-    contract_state, secret_pieces, enc_messages, doub_enc_messages, personal_keys, beneficiaries = create_test_scenario()
+    contract_state, secret_pieces, enc_messages, doub_enc_messages, personal_keys, beneficiaries = create_test_scenario()    
 
     # test object load
     user_contract = LegacyUserContract.load(contract_name)
