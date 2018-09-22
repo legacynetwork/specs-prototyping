@@ -26,22 +26,11 @@ ETH_ACCOUNTS = (
 # in practice, obtained through metamask
 USER_ADDRESS = '0xfsefjzd1vpmxokklf6l5n091jatlam4286onamfs'
 
-class LegacyUserApp:
 
-    def __init__():
-        pass
-
-    @staticmethod
-    def populate_system():
-        for i in range(0, len(ETH_ACCOUNTS)):
-            account_i = Wallet(ETH_ACCOUNTS[i])
-            account_i.save()
-
-    # DEPRECATED
-    @staticmethod
-    def get_user_address():
-        return Ethereum.get_new_address()
-
+def populate_system():
+    for i in range(0, len(ETH_ACCOUNTS)):
+        account_i = Wallet(ETH_ACCOUNTS[i])
+        account_i.save()
 
 def store_file_in_ipfs(message):
     # just return a random hash for now
@@ -57,7 +46,7 @@ if __name__ == '__main__':
     if '--fresh' in sys.argv:
         purge()  # deletes all state data previously stored
 
-    LegacyUserApp.populate_system() # creates some wallets to use as beneficiaries
+    populate_system() # creates some wallets to use as beneficiaries
 
     print "#####################################################################"
     print "####################### View: User  #################################"

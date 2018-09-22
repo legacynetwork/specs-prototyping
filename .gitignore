@@ -130,5 +130,8 @@ pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/python
 
+# MAC stuff
+.DS_Store
+
 # Project-specific
 data/
