@@ -1,9 +1,7 @@
 from util.util import load_object, save_object, say
 from legacy.contracts import Wallet, LegacyUserContract
-from test import create_test_scenario, contract_name
 import os, re, sys
 import config
-
 
 
 def save_secret_piece():
@@ -25,13 +23,25 @@ def load_or_create_wallet(address):
 		return load_object(os.path.join(config.DATA_DIR, address + '.pkl'))
 	except:
 		return Wallet()
-		
+
+def read_file_from_ipfs(index, filename=""):
+    if not filename:
+        filename = index
+    file_path = os.path.join(config.DATA_DIR, filename + '.txt')    
+    with open(file_path, 'r') as fp:
+        lines = fp.readlines()
+        return lines[0] # assuming only one line per file
+
+def load_test_scenario():
+	from test import create_test_scenario, contract_name
+	create_test_scenario()
+	return contract_name
 
 if __name__ == '__main__':
 
 	if '--test' in sys.argv:
 		create_test_scenario()
-		contract_name = contract_add
+		contract_file
 	else:
 		contract_name = 'user_contract'
 
