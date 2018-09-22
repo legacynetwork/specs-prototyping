@@ -198,7 +198,7 @@ if __name__ == '__main__':
     # tests read_file_from_ipfs(index, filename="")
     for i in range(n):
         doub_enc_message = read_file_from_ipfs(message_files[i])
-        
+
         # first decryption step
         enc_message_i_prime = aes_cipher.decrypt(doub_enc_message)
         if enc_message_i_prime != enc_messages[i]:
@@ -212,6 +212,10 @@ if __name__ == '__main__':
             say("Error, decrypted message using personal key doesn't match the original one", 2)        
             print message_i_prime + '\n' + secret_messages[i] + '\n'
 
+    # testing method get_beneficiary in contract:
+    b = user_contract.get_beneficiary('test_0x41k2qiianhyajppzd5avvrp12wbn42y0m2k70y5c')
+    if b['wallet_address'] != 'test_0x41k2qiianhyajppzd5avvrp12wbn42y0m2k70y5c':
+        say('Error in function get_beneficiary() of class LegacyUserContract', 2)
 
 
     say("success!", 1)

@@ -70,10 +70,17 @@ class LegacyUserContract:
         #return datetime.now().date() <= self.PoL_limit + self.PoL_margin # TODO add margin
         return datetime.now().date() <= self.PoL_limit
 
+    # TODO: deprecate
     def has_beneficiary(self, address):
         for i in range(0, self.n):
             if self.beneficiaries[i]['wallet_address'] == address:
                 return True
+
+    def get_beneficiary(self, address):
+        for i in range(self.n):
+            if self.beneficiaries[i]['wallet_address'] == address:
+                return self.beneficiaries[i]
+        return None
 
     def save(self, filename=""):
         if filename:

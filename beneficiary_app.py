@@ -68,7 +68,8 @@ if __name__ == '__main__':
 	while benef_address not in reg_accounts:
 		benef_address = str(raw_input("Not a valid account address. Try again\n"))
 
-	if user_contract.has_beneficiary(benef_address):
+	benef = user_contract.get_beneficiary(benef_address):
+	if benef:
 		print "You are one of the beneficiaries of user " + user_contract.owner + ". You might either:"		
 		print "\t1: Provide secrete share"
 		print "\t2: Claim funds"
@@ -85,6 +86,15 @@ if __name__ == '__main__':
 			else:
 				say("This is not a valid piece. Exiting")
 				sys.exit(0)
+
+		elif option == 2:
+			pass
+
+		elif option == 3:
+			if user_contract.secret:
+				message = read_file_from_ipfs(benef['message_url'])
+				print message
+
 
 
 
