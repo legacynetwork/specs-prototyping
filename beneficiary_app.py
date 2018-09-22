@@ -4,34 +4,28 @@ from test import create_test_scenario, contract_name
 import os, re, sys
 import config
 
-class Beneficiary:
 
-	def __init__(self):
-		# this.address = address
-		pass
 
-	def save_secret_piece():
-		# this.secret_piece = secret_piece
-		# put secret on the blockchain
-		pass
+def save_secret_piece():
+	# this.secret_piece = secret_piece
+	# put secret on the blockchain
+	pass
 
-	def get_personal_message():
-		pass
+def get_personal_message():
+	pass
 
-	@staticmethod
-	def get_personal_key():
-		pass
+def get_personal_key():
+	pass
 
-	def claim_funds():
-		pass
+def claim_funds():
+	pass
 
-	@staticmethod
-	def load_or_create_wallet(address):
-		try:
-			return load_object(os.path.join(config.DATA_DIR, address + '.pkl'))
-		except:
-			return Wallet()
-			
+def load_or_create_wallet(address):
+	try:
+		return load_object(os.path.join(config.DATA_DIR, address + '.pkl'))
+	except:
+		return Wallet()
+		
 
 if __name__ == '__main__':
 
