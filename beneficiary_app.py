@@ -108,6 +108,9 @@ if __name__ == '__main__':
                     print message
                 else:
                     print "Sorry, we didn't find any message for you."
+    else:
+        print "Sorry, it seems you are not registered as beneficiary"
+
 
 
 
