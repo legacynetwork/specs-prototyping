@@ -1,4 +1,5 @@
 # specs-prototyping
+
 A minimalist python prototype emulating Legacy's application functionalities and architecture
 ## Service Description
 
