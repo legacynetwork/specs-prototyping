@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract owned {
+contract Owned {
     function owned() public { owner = msg.sender; }
     address owner;
 
@@ -14,7 +14,7 @@ contract owned {
 }
 
 
-contract Legacy is owned{
+contract Legacy is Owned{
 
     // constant parameters
     uint constant SECRET_LEN = 256; // TODO: define
@@ -22,42 +22,51 @@ contract Legacy is owned{
     // state variables
     uint public k;
     uint public n;
-    days public t_PoL;
-    address public owner;
+    days public tPoL;
+    days public tZero;
+    // address public owner;
+    byte[256][] public hashedSecretShares;
     address[] public beneficiaries;
 
     struct Beneficiary{
-        uint funds_share;
-        byte[] message_url;
+        uint fundsShare;
+        byte[] messageUrl;
     }
 
     mapping(address => Beneficiary) public beneficiaryData;
 
-    byte[256][] public hashed_secret_shares;
 
-    // function (param types) {internal|external} [pure|constant|view|payable] [returns (return types)] 
+    // function (param types) {internal|external} [pure|constant|view|payable]
+    // [returns (return types)] 
 
-    function Legacy() public {}
+    function Legacy() public {
 
-    function proof_of_life() public {}
+     }
 
-    function is_active() public {}    
+    function proofOfLife() public onlyOwner {
+        reset_timer();
+    }
 
-    function reset_timer() internal{
+    function isActive() public return(bool) {
+        // if (now > t_zero) return false;
+        // else return true;            
+    }
+
+    function resetTimer() internal {
         // make sure cannot be called externally by anyone
         // apart from the owner
         // t_zero = t_zero + t_PoL;
     }
 
-    function save_secrete_share() public {}
+    function saveSecretShare(bytes[] _share) public {}
 
-    function claim_funds() public {}
+    function claimFunds() public {}
 
     function() public payable {
         // if(msg.sender == owner) reset_timer();
     }
     
-    function kill() public {}
+    function kill() public onlyOwner {}
 
 
 }
