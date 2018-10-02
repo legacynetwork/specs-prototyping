@@ -1,5 +1,6 @@
 pragma solidity ^0.4.24;
 
+
 contract Owned {
     function owned() public { owner = msg.sender; }
     address owner;
@@ -17,7 +18,8 @@ contract Owned {
 contract Legacy is Owned{
 
     // constant parameters
-    uint constant SECRET_LEN = 256; // TODO: define
+    uint constant SHARE_HASH_LEN = 256; // TODO: define
+    uint constant SHARE_LEN = 256; // TODO: define
 
     // state variables
     uint public k;
@@ -25,7 +27,8 @@ contract Legacy is Owned{
     days public tPoL;
     days public tZero;
     // address public owner;
-    byte[256][] public hashedSecretShares;
+    byte[SHARE_HASH_LEN][] public hashedSecretShares;
+    byte[SHARE_LEN][] public secretShares;
     address[] public beneficiaries;
 
     struct Beneficiary{
@@ -39,8 +42,13 @@ contract Legacy is Owned{
     // function (param types) {internal|external} [pure|constant|view|payable]
     // [returns (return types)] 
 
-    function Legacy() public {
-
+    function Legacy(uint _k, uint _n, uint _tPoL, byte[SHARE_HASH_LEN][] _hashedSecretShares) public {
+        if(_k > 0 && _n > 0 && _k < _n){
+            k = _k;
+            n = _n;
+        }   
+        if(_tPoL > 0) tPoL = _tPoL * 1 days;
+        hashedSecretShares = _hashedSecretShares; // TODO: check
      }
 
     function proofOfLife() public onlyOwner {
@@ -48,22 +56,33 @@ contract Legacy is Owned{
     }
 
     function isActive() public return(bool) {
-        // if (now > t_zero) return false;
-        // else return true;            
+        if (now > t_zero) return false;
+        else return true;
     }
 
     function resetTimer() internal {
-        // make sure cannot be called externally by anyone
+        // TODO: make sure cannot be called externally by anyone
         // apart from the owner
-        // t_zero = t_zero + t_PoL;
+        tZero = tZero + tPoL;
     }
 
-    function saveSecretShare(bytes[] _share) public {}
+    function saveSecretShare(bytes[] _share) public {
+        for(uint i = 0; i < hashedSecretShares.length){
+            if( sha256(_share) == hashedSecretShares[i])
+                secretShares.push(_share);
+        }
+    }
 
-    function claimFunds() public {}
+    function claimFunds(address _beneficiary) public {}
+
+    function isBeneficiary(address _beneficiary) public return(bool) {
+        for(uint i = 0; i < beneficiaries.length)
+            if( _beneficiary == beneficiaries[i]) return true;
+        return false;
+    }
 
     function() public payable {
-        // if(msg.sender == owner) reset_timer();
+        if(msg.sender == owner) reset_timer();
     }
     
     function kill() public onlyOwner {}
