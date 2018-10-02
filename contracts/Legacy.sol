@@ -42,7 +42,7 @@ contract Legacy is Owned{
     // function (param types) {internal|external} [pure|constant|view|payable]
     // [returns (return types)] 
 
-    function Legacy(uint _k, uint _n, uint _tPoL, byte[SHARE_HASH_LEN][] _hashedSecretShares) public {
+    function constructor(uint _k, uint _n, uint _tPoL, byte[SHARE_HASH_LEN][] _hashedSecretShares) public {
         if(_k > 0 && _n > 0 && _k < _n){
             k = _k;
             n = _n;
