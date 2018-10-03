@@ -46,7 +46,7 @@ contract Legacy is Owned{
         resetPoLTimer();
     }
 
-    function getProofOfLife() public returns(bool) {
+    function getProofOfLife() public view returns(bool) {
         if (now > tZero) return false;
         else return true;
     }
@@ -64,7 +64,7 @@ contract Legacy is Owned{
     
     function claimFunds(address _beneficiary) public {
         require(isBeneficiary(_beneficiary));
-        require(!getProofOfLife())
+        require(!getProofOfLife());
         _beneficiary.transfer(this.balance/beneficiaries.length);
     }
     
